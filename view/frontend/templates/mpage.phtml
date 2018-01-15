@@ -1,0 +1,11 @@
+<div class="tagalys-namespace" id="tagalys-namespace">
+  
+</div>
+
+<script type="text/javascript">
+    require(['jquery'],function($){
+        $(document).on('tagalys:ready', function() {
+            $('#tagalys-namespace').tagalys_mpage({ name: '<?php echo $this->getMpageUrlComponent() ?>' });
+        });
+    });
+</script>
