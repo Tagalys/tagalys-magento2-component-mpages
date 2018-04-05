@@ -12,14 +12,13 @@ class Index extends \Magento\Framework\App\Action\Action
         Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\Registry $registry,
         \Tagalys\Sync\Helper\Api $tagalysApi
     )
     {
         $this->_resultPageFactory = $resultPageFactory;
         $this->storeManager = $storeManager;
-        $this->request = $request;
+        $this->request = $context->getRequest();
         $this->registry = $registry;
         $this->tagalysApi = $tagalysApi;
         parent::__construct($context);
