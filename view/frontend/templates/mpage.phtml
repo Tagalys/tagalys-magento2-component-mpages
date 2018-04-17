@@ -3,9 +3,9 @@
 </div>
 
 <script type="text/javascript">
-    require(['jquery'],function($){
-        $(document).on('tagalys:ready', function() {
-            $('#tagalys-namespace').tagalys_mpage({ name: '<?php echo $this->getMpageUrlComponent() ?>' });
+    require(['jquery'],function(jQuery){
+        jQuery(document).on('tagalys:ready', function() {
+            jQuery('#tagalys-namespace').tagalys_mpage({ name: '<?php echo $this->getMpageUrlComponent() ?>' });
         });
     });
 </script>
