@@ -12,8 +12,10 @@ class Index extends \Magento\Framework\App\Action\Action
         Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\View\Page\Config $pageConfig,
         \Magento\Framework\Registry $registry,
-        \Tagalys\Sync\Helper\Api $tagalysApi
+        \Tagalys\Sync\Helper\Api $tagalysApi,
+        \Tagalys\Mpages\Helper\Mpages $tagalysMpages
     )
     {
         $this->_resultPageFactory = $resultPageFactory;
@@ -21,6 +23,8 @@ class Index extends \Magento\Framework\App\Action\Action
         $this->request = $context->getRequest();
         $this->registry = $registry;
         $this->tagalysApi = $tagalysApi;
+        $this->tagalysMpages = $tagalysMpages;
+        $this->pageConfig = $pageConfig;
         parent::__construct($context);
     }
  
@@ -42,7 +46,8 @@ class Index extends \Magento\Framework\App\Action\Action
                 $this->pageConfig->setRobots('NOINDEX,NOFOLLOW');
             }
 
-            $response = $this->tagalysApi->storeApiCall($this->storeManager->getStore()->getId().'', '/v1/mpages/'.$mpageUrlComponent, array('request' => array('variables', 'banners')));
+            $response = $this->tagalysMpages->getMpageData($this->storeManager->getStore()->getId().'', $mpageUrlComponent);
+
             if ($response !== false) {
 
                 if (isset($response['variables'])) {
