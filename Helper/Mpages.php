@@ -31,14 +31,14 @@ class Mpages extends \Magento\Framework\App\Helper\AbstractHelper
                         $processed = array();
                         $page = 1;
                         $per_page = 50;
-                        $response = $this->tagalysApi->storeApiCall($storeId, '/v1/mpages', array("page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
+                        $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages', array("page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
                         $processed_now = $this->processResponse($storeId, $response);
                         $processed = array_merge($processed, $processed_now);
                         $finished = (($page - 1) * $per_page) + count($response['results']);
                         $loop_number = 1;
                         while ($finished < $response['total'] || $loop_number >= 50) {
                             $page += 1;
-                            $response = $this->tagalysApi->storeApiCall($storeId, '/v1/mpages', array("page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
+                            $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages', array("page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
                             $processed_now = $this->processResponse($storeId, $response);
                             $processed = array_merge($processed, $processed_now);
                             $finished = (($page - 1) * $per_page) + count($response['results']);
@@ -95,7 +95,7 @@ class Mpages extends \Magento\Framework\App\Helper\AbstractHelper
             $response = json_decode($mpage_data, true);
         } else {
             // page doesn't exist in cache
-            $response = $this->tagalysApi->storeApiCall($storeId, '/v1/mpages/'.$mpage, array('request' => array('variables')));
+            $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages/'.$mpage, array('request' => array('variables')));
             if ($response != false) {
                 $response['url_component'] = $mpage;
                 $this->saveMpageCache($storeId, $response);
