@@ -1,6 +1,9 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd" layout="1column">
     <body>
         <referenceBlock name="page.main.title" remove="true" />
+        <referenceBlock name="head.additional">
+            <block class="Tagalys\Mpages\Block\Mpage" name="tagalyscanonicaltags" template="tagalyscanonicaltags.phtml"/>
+        </referenceBlock>
         <referenceContainer name="content">
             <block class="Tagalys\Mpages\Block\Mpage" name="mpage" template="mpage.phtml" />
         </referenceContainer>

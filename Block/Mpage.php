@@ -23,4 +23,8 @@ class Mpage extends \Magento\Framework\View\Element\Template
         return $this->registry->registry('mpageUrlComponent');
     }
 
+    public function getCanonicalUrl() {
+        // return $this->request->getParams();
+        return explode('?', $this->storeManager->getStore()->getCurrentUrl())[0];
+    }
 }

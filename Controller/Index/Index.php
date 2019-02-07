@@ -43,7 +43,7 @@ class Index extends \Magento\Framework\App\Action\Action
         try {
             $params = $this->request->getParams();
             if (array_key_exists('f', $params) || array_key_exists('sort', $params) || array_key_exists('page', $params)) {
-                $this->pageConfig->setRobots('NOINDEX,NOFOLLOW');
+                $this->pageConfig->setRobots('NOINDEX,FOLLOW');
             }
 
             $response = $this->tagalysMpages->getMpageData($this->storeManager->getStore()->getId().'', $mpageUrlComponent);

@@ -14,7 +14,7 @@ class InstallSchema implements InstallSchemaInterface
         $installer = $setup;
         $installer->startSetup();
  
-        $mpagescacheTableName = $installer->getTable('tagalys_mpagesccache');
+        $mpagescacheTableName = $installer->getTable('tagalys_mpagescache');
         if ($installer->getConnection()->isTableExists($mpagescacheTableName) != true) {
             $configTable = $installer->getConnection()
                 ->newTable($mpagescacheTableName)
