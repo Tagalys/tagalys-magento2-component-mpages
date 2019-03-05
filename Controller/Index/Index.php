@@ -45,10 +45,19 @@ class Index extends \Magento\Framework\App\Action\Action
             if (array_key_exists('f', $params) || array_key_exists('sort', $params) || array_key_exists('page', $params)) {
                 $this->pageConfig->setRobots('NOINDEX,FOLLOW');
             }
+            if (array_key_exists('page', $params)) {
+                $this->registry->register('mpageCurrentPage', intval($params['page']));
+            } else {
+                $this->registry->register('mpageCurrentPage', 1);
+            }
 
             $response = $this->tagalysMpages->getMpageData($this->storeManager->getStore()->getId().'', $mpageUrlComponent);
 
             if ($response !== false) {
+
+                if (isset($response['total'])) {
+                    $this->registry->register('mpageTotalProducts', intval($response['total']));
+                }
 
                 if (isset($response['variables'])) {
                     if (isset($response['variables']['page_title']) && $response['variables']['page_title'] != '' ) {

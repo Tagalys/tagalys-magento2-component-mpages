@@ -1,1 +1,10 @@
 <link rel="canonical" href="<?php echo $this->getCanonicalUrl(); ?>" />
+<?php
+  $prevAndNextLinks = $this->getPrevAndNextLinks(16);
+  if ($prevAndNextLinks['prev'] !== false) {
+    echo "<link rel='prev' href='{$prevAndNextLinks['prev']}' />";
+  }
+  if ($prevAndNextLinks['next'] !== false) {
+    echo "<link rel='next' href='{$prevAndNextLinks['next']}' />";
+  }
+?>
