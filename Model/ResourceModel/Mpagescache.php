@@ -92,13 +92,16 @@ class Mpagescache extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
      * @param int $isActive
      * @return \Magento\Framework\DB\Select
      */
-    protected function _getLoadByUrlSelect($storeId, $url)
+    protected function _getLoadByUrlSelect($storeId, $platform, $url)
     {
         $select = $this->getConnection()->select()->from(
             ['tmc' => $this->getMainTable()]
         )->where(
             'tmc.store_id = ?',
             $storeId
+        )->where(
+            'tmc.platform = ?',
+            $platform
         )->where(
             'tmc.url = ?',
             $url
@@ -107,9 +110,9 @@ class Mpagescache extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         return $select;
     }
 
-    public function checkUrl($storeId, $url)
+    public function checkUrl($storeId, $platform, $url)
     {
-        $select = $this->_getLoadByUrlSelect($storeId, $url);
+        $select = $this->_getLoadByUrlSelect($storeId, $platform, $url);
         $select->reset(\Zend_Db_Select::COLUMNS)->columns('tmc.id')->limit(1);
 
         return $this->getConnection()->fetchOne($select);

@@ -38,6 +38,8 @@ class Index extends \Magento\Framework\App\Action\Action
 
         $this->registry->register('mpageUrlComponent', $mpageUrlComponent);
 
+        $this->registry->register('tagalysPowered', true);
+
         $resultPage->getConfig()->getTitle()->set($mpageUrlComponent);
 
         try {
@@ -45,18 +47,16 @@ class Index extends \Magento\Framework\App\Action\Action
             if (array_key_exists('f', $params) || array_key_exists('sort', $params) || array_key_exists('page', $params)) {
                 $this->pageConfig->setRobots('NOINDEX,FOLLOW');
             }
-            if (array_key_exists('page', $params)) {
-                $this->registry->register('mpageCurrentPage', intval($params['page']));
-            } else {
-                $this->registry->register('mpageCurrentPage', 1);
-            }
 
-            $response = $this->tagalysMpages->getMpageData($this->storeManager->getStore()->getId().'', $mpageUrlComponent);
+            $response = $this->tagalysMpages->getMpageData($this->storeManager->getStore()->getId().'', 0, $mpageUrlComponent);
 
             if ($response !== false) {
 
                 if (isset($response['total'])) {
                     $this->registry->register('mpageTotalProducts', intval($response['total']));
+                }
+                if (isset($response['name'])) {
+                    $this->registry->register('mpageName', intval($response['name']));
                 }
 
                 if (isset($response['variables'])) {

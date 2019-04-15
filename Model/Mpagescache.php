@@ -43,6 +43,10 @@ class Mpagescache  extends \Magento\Framework\Model\AbstractModel implements Mpa
     {
         return $this->getData(self::STORE_ID);
     }
+    public function getPlatform()
+    {
+        return $this->getData(self::PLATFORM);
+    }
 
     public function getUrl()
     {
@@ -52,9 +56,9 @@ class Mpagescache  extends \Magento\Framework\Model\AbstractModel implements Mpa
     {
         return $this->getData(self::CACHEDATA);
     }
-    public function checkUrl($storeId, $url)
+    public function checkUrl($storeId, $platform, $url)
     {
-        return $this->_getResource()->checkUrl($storeId, $url);
+        return $this->_getResource()->checkUrl($storeId, $platform, $url);
     }
 
 
@@ -72,6 +76,10 @@ class Mpagescache  extends \Magento\Framework\Model\AbstractModel implements Mpa
     public function setStoreId($store_id)
     {
         return $this->setData(self::STORE_ID, $store_id);
+    }
+    public function setPatform($platform)
+    {
+        return $this->setData(self::PLATFORM, $platform);
     }
 
     public function setUrl($url)

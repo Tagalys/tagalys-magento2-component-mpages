@@ -23,7 +23,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             //code to upgrade to 1.0.1
             $mpagescacheTableName = $installer->getTable('tagalys_mpagescache');
             if ($installer->getConnection()->isTableExists($mpagescacheTableName) != true) {
-                $configTable = $installer->getConnection()
+                $mpagescacheTable = $installer->getConnection()
                     ->newTable($mpagescacheTableName)
                     ->addColumn(
                         'id',
@@ -70,8 +70,24 @@ class UpgradeSchema implements UpgradeSchemaInterface
                     ->setComment('Tagalys Mpages Cache')
                     ->setOption('type', 'InnoDB')
                     ->setOption('charset', 'utf8');
-                $installer->getConnection()->createTable($configTable);
+                $installer->getConnection()->createTable($mpagescacheTable);
             }
+        }
+
+        if (version_compare($context->getVersion(), '1.0.2', '<')) {
+            //code to upgrade to 1.0.2
+            $mpagescacheTable = $installer->getConnection()->addColumn(
+                $installer->getTable('tagalys_mpagescache'),
+                'platform',
+                [
+                    'type' => Table::TYPE_INTEGER,
+                    'length' => 1,
+                    'nullable' => true,
+                    'unsigned' => true,
+                    'comment' => 'Magento Category Page?',
+                    'default' => 0
+                ]
+            );
         }
  
         $installer->endSetup();

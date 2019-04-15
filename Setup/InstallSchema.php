@@ -41,6 +41,17 @@ class InstallSchema implements InstallSchemaInterface
                     'Store ID'
                 )
                 ->addColumn(
+                    'platform',
+                    Table::TYPE_INTEGER,
+                    1,
+                    [
+                        'unsigned' => true,
+                        'nullable' => false,
+                        'default' => 0
+                    ],
+                    'Store ID'
+                )
+                ->addColumn(
                     'url',
                     Table::TYPE_TEXT,
                     255,

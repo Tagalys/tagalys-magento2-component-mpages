@@ -9,6 +9,7 @@ interface MpagescacheInterface
      */
     const ID = 'id';
     const STORE_ID = 'store_id';
+    const PLATFORM = 'platform';
     const URL = 'url';
     const CACHEDATA = 'cachedata';
 

@@ -31,14 +31,14 @@ class Mpages extends \Magento\Framework\App\Helper\AbstractHelper
                         $processed = array();
                         $page = 1;
                         $per_page = 50;
-                        $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages', array("page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
+                        $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages', array("include_platform_pages" => true, "page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
                         $processed_now = $this->processResponse($storeId, $response);
                         $processed = array_merge($processed, $processed_now);
                         $finished = (($page - 1) * $per_page) + count($response['results']);
                         $loop_number = 1;
                         while ($finished < $response['total'] || $loop_number >= 50) {
                             $page += 1;
-                            $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages', array("page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
+                            $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages', array("include_platform_pages" => true, "page" => $page, "per_page" => $per_page, "request" => ["url_component", "variables"]));
                             $processed_now = $this->processResponse($storeId, $response);
                             $processed = array_merge($processed, $processed_now);
                             $finished = (($page - 1) * $per_page) + count($response['results']);
@@ -56,7 +56,7 @@ class Mpages extends \Magento\Framework\App\Helper\AbstractHelper
     protected function processResponse($storeId, $response) {
         $ids = array();
         foreach($response['results'] as $result) {
-            $saveResponse = $this->saveMpageCache($storeId, $result);
+            $saveResponse = $this->saveMpageCache($storeId, ($result['platform'] ? 1 : 0), $result);
             if ($saveResponse != false) {
                 array_push($ids, $saveResponse);
             }
@@ -64,21 +64,26 @@ class Mpages extends \Magento\Framework\App\Helper\AbstractHelper
         return $ids;
     }
 
-    public function saveMpageCache($storeId, $response) {
+    public function saveMpageCache($storeId, $platform, $response) {
         try {
+            if ($platform === 1 && array_key_exists('id', $response)) {
+                $response['url_component'] = $response['id'];
+            }
             $mpagescache = $this->mpagescacheFactory->create();
-            $mpagecacheId = $mpagescache->checkUrl($storeId, $response['url_component']);
+            $mpagecacheId = $mpagescache->checkUrl($storeId, $platform, $response['url_component']);
             if ($mpagecacheId) {
                 $found = $mpagescache->load($mpagecacheId);
+                $found->setPlatform($platform);
                 $found->setCachedata(json_encode($response));
                 $found->save();
                 return $mpagecacheId;
             } else {
                 $mpagescache->setStoreId($storeId);
+                $mpagescache->setPlatform($platform);
                 $mpagescache->setUrl($response['url_component']);
                 $mpagescache->setCachedata(json_encode($response));
-                $id = $mpagescache->save();
-                return $id;
+                $mpagescache->save();
+                return $mpagescache->getId();
             }
         } catch (Exception $e){
             $this->tagalysApi->log('error', 'Exception in saveMpageCache', array('exception_message' => $e->getMessage()));
@@ -86,28 +91,36 @@ class Mpages extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
 
-    public function getMpageData($storeId, $mpage) {
+    public function getMpageData($storeId, $platform, $mpage) {
         $mpagescache = $this->mpagescacheFactory->create();
-        $mpagecacheId = $mpagescache->checkUrl($storeId, $mpage);
+        $mpagecacheId = $mpagescache->checkUrl($storeId, $platform, $mpage);
         if ($mpagecacheId) {
             $found = $mpagescache->load($mpagecacheId);
             $mpage_data = $found->getCachedata();
             $response = json_decode($mpage_data, true);
         } else {
             // page doesn't exist in cache
-            $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages/'.$mpage, array('request' => array('variables')));
+            $urlForApiCall = '/v1/mpages/'.$mpage;
+            if ($platform === 1) {
+                $urlForApiCall = '/v1/mpages/_platform/'.$mpage;
+            }
+            $response = $this->tagalysApi->storeApiCall($storeId.'', $urlForApiCall, array('request' => array('variables')));
             if ($response != false) {
                 $response['url_component'] = $mpage;
-                $this->saveMpageCache($storeId, $response);
+                $this->saveMpageCache($storeId, $platform, $response);
             }
         }
         return $response;
     }
-    public function updateSpecificMpageCache($storeId, $mpage) {
-        $response = $this->tagalysApi->storeApiCall($storeId.'', '/v1/mpages/'.$mpage, array('request' => array('variables')));
+    public function updateSpecificMpageCache($storeId, $platform, $mpage) {
+        $urlForApiCall = '/v1/mpages/'.$mpage;
+        if ($platform === 1) {
+            $urlForApiCall = '/v1/mpages/_platform/'.$mpage;
+        }
+        $response = $this->tagalysApi->storeApiCall($storeId.'', $urlForApiCall, array('request' => array('variables')));
         if ($response != false) {
             $response['url_component'] = $mpage;
-            $this->saveMpageCache($storeId, $response);
+            $this->saveMpageCache($storeId, $platform, $response);
         }
         return $response;
     }
