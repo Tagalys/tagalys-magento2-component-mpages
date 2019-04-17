@@ -56,7 +56,7 @@ class Index extends \Magento\Framework\App\Action\Action
                     $this->registry->register('mpageTotalProducts', intval($response['total']));
                 }
                 if (isset($response['name'])) {
-                    $this->registry->register('mpageName', intval($response['name']));
+                    $this->registry->register('mpageName', $response['name']);
                 }
 
                 if (isset($response['variables'])) {
