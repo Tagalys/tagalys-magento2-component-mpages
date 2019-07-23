@@ -58,6 +58,9 @@ class Index extends \Magento\Framework\App\Action\Action
                 if (isset($response['name'])) {
                     $this->registry->register('mpageName', $response['name']);
                 }
+                if (isset($response['variables'])) {
+                    $this->registry->register('mpageVariables', $response['variables']);
+                }
 
                 if (isset($response['variables'])) {
                     if (isset($response['variables']['page_title']) && $response['variables']['page_title'] != '' ) {
