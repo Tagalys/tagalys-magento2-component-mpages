@@ -15,7 +15,7 @@ class Mpages extends \Magento\Framework\App\Helper\AbstractHelper
         $this->tagalysConfiguration = $tagalysConfiguration;
         $this->storeManager = $storeManager;
 
-        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/tagalys.log');
+        $writer = new \Zend\Log\Writer\Stream(BP . '/var/log/tagalys_core.log');
         $this->tagalysLogger = new \Zend\Log\Logger();
         $this->tagalysLogger->addWriter($writer);
     }
